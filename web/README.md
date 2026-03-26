@@ -10,6 +10,7 @@ It provides:
 - Baseline vs intervention comparison (`/compare-interventions`)
 - Scenario JSON import/export
 - Parameter governance display (`/parameter-governance`)
+- A public-facing presentation view for non-technical explanation
 
 ## Stack
 

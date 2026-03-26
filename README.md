@@ -4,6 +4,7 @@ This repository contains an executable implementation of the **Performance Under
 
 - A Python backend (FastAPI) that simulates performance trajectories, evaluates outcomes, calibrates selected parameters, and computes sensitivity rankings.
 - A TypeScript web dashboard (React + Vite) for interactive scenario analysis and intervention comparison.
+- A public-facing presentation view in the web app for non-technical comprehension.
 - The original conceptual model document in `performance_model.md`.
 
 ## Repository layout
@@ -64,6 +65,11 @@ npm run dev
 ```
 
 The dashboard defaults to API base URL `http://127.0.0.1:8000`.
+
+The web app now includes two views:
+
+- `Dashboard`: interactive controls, simulations, and comparisons.
+- `Public presentation`: narrative summary suitable for sharing the model with non-technical audiences.
 
 ## Backend API reference
 

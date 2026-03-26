@@ -262,3 +262,70 @@ td {
 .hidden-input {
   display: none;
 }
+
+.view-mode-panel {
+  padding-bottom: 0.8rem;
+}
+
+.view-mode-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.presentation-hero {
+  background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 100%);
+}
+
+.presentation-kicker {
+  margin: 0;
+  color: #1e40af;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.presentation-date {
+  margin: 0.3rem 0 0.8rem;
+  color: #486581;
+  font-size: 0.88rem;
+}
+
+.presentation-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.presentation-card {
+  border: 1px solid #c5d6e5;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.75rem;
+}
+
+.presentation-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.15rem;
+  color: #243b53;
+}
+
+.presentation-list li + li {
+  margin-top: 0.3rem;
+}
+
+.presentation-equation {
+  margin: 0.6rem 0 0;
+  color: #102a43;
+  background: #f8fafc;
+  border: 1px solid #dbe4f0;
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.55rem;
+  overflow-x: auto;
+}

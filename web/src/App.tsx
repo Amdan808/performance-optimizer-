@@ -36,6 +36,7 @@ import {
   sanitizeScenario,
   type ScenarioPresetKey,
 } from './modelDefaults'
+import PresentationView from './PresentationView'
 
 type ScenarioField = {
   key: keyof ModelScenario
@@ -223,6 +224,10 @@ function NumberInput(props: {
 }
 
 function App() {
+  const [viewMode, setViewMode] = useState<'dashboard' | 'presentation'>(
+    'dashboard',
+  )
+
   const [apiBaseUrl, setApiBaseUrl] = useState(
     import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000',
   )
@@ -572,7 +577,38 @@ function App() {
 
   return (
     <div className="app-shell">
-      <header className="panel">
+      <section className="panel view-mode-panel">
+        <div className="view-mode-row">
+          <div>
+            <h1>Performance Under Pressure</h1>
+            <p className="subtitle">
+              Switch between the interactive dashboard and a public-friendly
+              presentation.
+            </p>
+          </div>
+
+          <div className="view-toggle">
+            <button
+              type="button"
+              onClick={() => setViewMode('dashboard')}
+              className={viewMode === 'dashboard' ? '' : 'secondary'}
+            >
+              Dashboard
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('presentation')}
+              className={viewMode === 'presentation' ? '' : 'secondary'}
+            >
+              Public presentation
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {viewMode === 'dashboard' ? (
+        <>
+          <header className="panel">
         <h1>Performance Under Pressure Dashboard</h1>
         <p className="subtitle">
           Phase 2 UI for simulation, sensitivity ranking, and baseline vs
@@ -1061,6 +1097,10 @@ function App() {
           </>
         ) : null}
       </section>
+        </>
+      ) : (
+        <PresentationView />
+      )}
     </div>
   )
 }
