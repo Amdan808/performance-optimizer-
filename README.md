@@ -1,11 +1,27 @@
 # Performance Under Pressure — Executable Model
 
-This repository contains an executable implementation of the **Performance Under Pressure** model:
+This project started as an observation linking psychology and mathematics:
+performance can become sharper and more reliable under high-stakes, time-pressured conditions.
 
-- A Python backend (FastAPI) that simulates performance trajectories, evaluates outcomes, calibrates selected parameters, and computes sensitivity rankings.
-- A TypeScript web dashboard (React + Vite) for interactive scenario analysis and intervention comparison.
-- A public-facing presentation view in the web app for non-technical comprehension.
-- The original conceptual model document in `performance_model.md`.
+The repository turns that idea into a runnable system you can inspect, simulate, and discuss.
+
+## Origin & intent
+
+The model formalizes a self-observed pattern:
+
+- Output often stays low during long horizons.
+- Performance rises steeply near hard deadlines.
+- Stakes, perceived consequence, and focus dynamics shape this curve.
+
+The practical goal is intervention design: engineering conditions that trigger peak performance earlier, rather than waiting for last-minute pressure.
+
+## What this repository includes
+
+- **Python backend (FastAPI):** simulation, evaluation, calibration, sensitivity ranking, intervention comparison.
+- **TypeScript web app (React + Vite):**
+  - `Dashboard` mode for interactive analysis.
+  - `Public presentation` mode for non-technical explanation.
+- **Conceptual reference:** `performance_model.md` (original model narrative and symbols).
 
 ## Repository layout
 
@@ -17,24 +33,28 @@ This repository contains an executable implementation of the **Performance Under
 └── web/                          # frontend dashboard
 ```
 
+## Model at a glance
+
+The system is two-layer:
+
+- **Layer 1: Output engine** models instantaneous performance `P(t)` from stress, capability, focus, fatigue, and noise.
+- **Layer 2: Outcome evaluation** maps accumulated output `Ω` against threshold `θ` into success probability `p`.
+
+This implementation closes key logical gaps from the original conceptual draft:
+
+- Explicit bounded `g(Ω, θ, X)` and `ψ = f(p, ρ, ι)` forms.
+- Smooth terminal gate near deadline (no hard discontinuity).
+- Integrated distraction-focus coupling (`D_max -> D(S) -> F(S)`).
+- Parameter governance split between scenario inputs and fitted parameters.
+
 ## Tech stack
 
-### Backend
-
-- Python 3.12+
-- FastAPI + Pydantic v2
-- NumPy + SciPy
-- Pytest
-
-### Frontend
-
-- React 19 + TypeScript + Vite
-- Recharts
-- `openapi-typescript` for typed API contracts
+- Backend: Python 3.12+, FastAPI, Pydantic v2, NumPy, SciPy, Pytest
+- Frontend: React 19, TypeScript, Vite, Recharts, `openapi-typescript`
 
 ## Quick start
 
-### 1) Backend setup
+### 1) Start backend
 
 From repository root:
 
@@ -44,7 +64,7 @@ python3 -m venv .venv
 pip install -r requirements.txt
 ```
 
-Run the API:
+Run the API server:
 
 ```bash
 uvicorn performance_model.main:app --app-dir src --host 127.0.0.1 --port 8000
@@ -55,7 +75,7 @@ Open API docs:
 - Swagger UI: `http://127.0.0.1:8000/docs`
 - OpenAPI JSON: `http://127.0.0.1:8000/openapi.json`
 
-### 2) Frontend setup
+### 2) Start frontend
 
 From `web/`:
 
@@ -64,63 +84,32 @@ npm install
 npm run dev
 ```
 
-The dashboard defaults to API base URL `http://127.0.0.1:8000`.
+The web app defaults to API base URL `http://127.0.0.1:8000`.
 
-The web app now includes two views:
+Open the app and choose either:
 
-- `Dashboard`: interactive controls, simulations, and comparisons.
-- `Public presentation`: narrative summary suitable for sharing the model with non-technical audiences.
+- `Dashboard` for simulation, sensitivity, and intervention testing.
+- `Public presentation` for a concise narrative suitable for GitHub/public readers.
 
-## Backend API reference
+## API overview
 
-### `GET /health`
+- `GET /health` — health check
+- `GET /parameter-governance` — fixed vs fitted parameter roles
+- `POST /simulate` — run deterministic or stochastic scenario simulation
+- `POST /evaluate` — compute outcome probability from `omega`, `theta`, and extrinsic factors
+- `POST /calibrate` — fit allowed behavioral parameters (`alpha`, `beta`, `lambda0`, `gamma`)
+- `POST /sensitivity` — rank local parameter impact
+- `POST /compare-interventions` — baseline vs intervention deltas
 
-Health check.
+## Model governance notes
 
-### `GET /parameter-governance`
+- Scenario inputs (for conditions/introspection): includes values such as `iota`, `rho`, `R_s`, `R_f`.
+- Fitted parameters (for calibration): `alpha`, `beta`, `lambda0`, `gamma`.
+- Unsupported fit parameters are rejected with HTTP 400 by design.
 
-Returns parameter governance split:
+## Development checks
 
-- Scenario inputs (set by conditions/introspection)
-- Fitted parameters (currently: `alpha`, `beta`, `lambda0`, `gamma`)
-
-### `POST /simulate`
-
-Runs simulation for a scenario.
-
-- Request: `SimulateRequest`
-- Response: `SimulationResponse` (summary + trajectory + feedback + optional distribution)
-
-### `POST /evaluate`
-
-Evaluates outcome probability from `omega`, `theta`, and extrinsic factors.
-
-### `POST /calibrate`
-
-Fits allowed behavioral parameters to observed output points.
-
-- Rejects unsupported `fit_parameters` with HTTP 400.
-
-### `POST /sensitivity`
-
-Computes local sensitivity ranking for selected parameters.
-
-### `POST /compare-interventions`
-
-Compares baseline scenario with intervention scenarios and returns deltas.
-
-## Model implementation notes
-
-- The model feedback loop is computationally closed with explicit bounded functions for:
-  - `g(Ω, θ, X)` via outcome probability mapping
-  - `ψ = f(p, ρ, ι)` via perceived consequence reality
-- Deadline behavior uses a smooth terminal gate instead of a hard discontinuity.
-- `D_max -> D(S) -> F(S)` coupling is implemented in the focus/distraction path.
-- Calibration governance constrains fitting to behavioral parameters only.
-
-## Development workflow
-
-### Backend checks
+### Backend
 
 From repository root:
 
@@ -129,7 +118,7 @@ From repository root:
 pytest -q
 ```
 
-### Frontend checks
+### Frontend
 
 From `web/`:
 
@@ -138,7 +127,7 @@ npm run lint
 npm run build
 ```
 
-## Regenerating frontend API types
+## Regenerate frontend API types
 
 If backend request/response schemas change:
 
@@ -156,6 +145,6 @@ PY
 npm run generate:api
 ```
 
-## Known notes
+## Notes
 
-- Frontend build is now split into `react`, `charts`, and `vendor` chunks via `web/vite.config.ts` to keep initial app payload smaller.
+- Frontend build is split into `react`, `charts`, and `vendor` chunks (`web/vite.config.ts`) to keep initial payload smaller.
