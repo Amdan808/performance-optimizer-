@@ -74,3 +74,9 @@ npm run build
 For backend API overview, architecture context, and full run workflow, see:
 
 - `../README.md`
+
+// add:
+focus on slider style + active
+try to make animation smoother
+fix linting. typography
+use understandable naming conventions.
